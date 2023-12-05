@@ -1,0 +1,124 @@
+set(LUA_LIB_SRC
+    ${CMAKE_CURRENT_SOURCE_DIR}/lapi.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/lcode.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/lctype.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/ldebug.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/ldo.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/ldump.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/lfunc.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/lgc.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/llex.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/lmem.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/lobject.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/lopcodes.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/lparser.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/lstate.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/lstring.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/ltable.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/ltm.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/lundump.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/lvm.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/lzio.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/lauxlib.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/lbaselib.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/lcorolib.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/ldblib.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/liolib.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/lmathlib.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/loadlib.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/loslib.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/lstrlib.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/ltablib.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/lutf8lib.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/linit.c
+)
+set(LUA_EXE_SRC
+    ${CMAKE_CURRENT_SOURCE_DIR}/lua.c
+)
+set(LUAC_EXE_SRC
+    ${CMAKE_CURRENT_SOURCE_DIR}/luac.c
+)
+
+add_library(lua54 SHARED
+    ${LUA_LIB_SRC}
+)
+target_include_directories(lua54
+    PRIVATE
+        ${CMAKE_SOURCE_DIR}/include/lua
+)
+target_compile_definitions(lua54
+    PRIVATE
+        LUA_COMPAT_5_3
+        LUA_BUILD_AS_DLL
+)
+target_compile_options(lua54
+    PRIVATE
+        -std=gnu99
+        -Wall
+        -Wextra
+)
+
+if(NOT ${LUA_BUILD_SHARED_ONLY})
+    add_executable(lua
+        ${LUA_EXE_SRC}
+    )
+    target_include_directories(lua
+        PRIVATE
+            ${CMAKE_SOURCE_DIR}/include/lua
+    )
+    target_compile_definitions(lua
+        PRIVATE
+            LUA_COMPAT_5_3
+            LUA_BUILD_AS_DLL
+    )
+    target_compile_options(lua
+        PRIVATE
+            -std=gnu99
+            -Wall
+            -Wextra
+    )
+    target_link_libraries(lua
+        lua54
+    )
+
+    add_library(lua54_static STATIC
+        ${LUA_LIB_SRC}
+    )
+    target_include_directories(lua54_static
+        PRIVATE
+            ${CMAKE_SOURCE_DIR}/include/lua
+    )
+    target_compile_definitions(lua54_static
+        PRIVATE
+            LUA_COMPAT_5_3
+            LUA_BUILD_AS_DLL
+    )
+    target_compile_options(lua54_static
+        PRIVATE
+            -std=gnu99
+            -Wall
+            -Wextra
+    )
+
+    add_executable(luac
+        ${LUAC_EXE_SRC}
+    )
+    target_include_directories(luac
+        PRIVATE
+            ${CMAKE_SOURCE_DIR}/include/lua
+    )
+    target_compile_definitions(luac
+        PRIVATE
+            LUA_COMPAT_5_3
+            LUA_BUILD_AS_DLL
+    )
+    target_compile_options(luac
+        PRIVATE
+            -std=gnu99
+            -Wall
+            -Wextra
+    )
+    target_link_libraries(luac
+        lua54_static
+    )
+endif()
