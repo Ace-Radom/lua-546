@@ -44,7 +44,7 @@ add_library(lua54 SHARED
 )
 target_include_directories(lua54
     PRIVATE
-        ${CMAKE_SOURCE_DIR}/include/lua
+        ${PROJECT_SOURCE_DIR}/include/lua
 )
 target_compile_definitions(lua54
     PRIVATE
@@ -64,7 +64,7 @@ if(NOT ${LUA_BUILD_SHARED_ONLY})
     )
     target_include_directories(lua
         PRIVATE
-            ${CMAKE_SOURCE_DIR}/include/lua
+            ${PROJECT_SOURCE_DIR}/include/lua
     )
     target_compile_definitions(lua
         PRIVATE
@@ -86,7 +86,7 @@ if(NOT ${LUA_BUILD_SHARED_ONLY})
     )
     target_include_directories(lua54_static
         PRIVATE
-            ${CMAKE_SOURCE_DIR}/include/lua
+            ${PROJECT_SOURCE_DIR}/include/lua
     )
     target_compile_definitions(lua54_static
         PRIVATE
@@ -105,7 +105,7 @@ if(NOT ${LUA_BUILD_SHARED_ONLY})
     )
     target_include_directories(luac
         PRIVATE
-            ${CMAKE_SOURCE_DIR}/include/lua
+            ${PROJECT_SOURCE_DIR}/include/lua
     )
     target_compile_definitions(luac
         PRIVATE
