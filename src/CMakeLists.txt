@@ -39,26 +39,48 @@ set(LUAC_EXE_SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/luac.c
 )
 
-add_library(lua54 SHARED
+add_library(lua_obj OBJECT
     ${LUA_LIB_SRC}
 )
-target_include_directories(lua54
+target_include_directories(lua_obj
     PRIVATE
         ${PROJECT_SOURCE_DIR}/include/lua
 )
-target_compile_definitions(lua54
+target_compile_definitions(lua_obj
     PRIVATE
         LUA_COMPAT_5_3
         LUA_BUILD_AS_DLL
 )
-target_compile_options(lua54
+target_compile_options(lua_obj
     PRIVATE
         -std=gnu99
         -Wall
         -Wextra
 )
 
-if(NOT ${LUA_BUILD_SHARED_ONLY})
+if(${LUA_BUILD_SHARED})
+    add_library(lua54 SHARED
+        $<TARGET_OBJECTS:lua_obj>
+    )
+    target_include_directories(lua54
+        PRIVATE
+            ${PROJECT_SOURCE_DIR}/include/lua
+    )
+    target_compile_definitions(lua54
+        PRIVATE
+            LUA_COMPAT_5_3
+            LUA_BUILD_AS_DLL
+    )
+    target_compile_options(lua54
+        PRIVATE
+            -std=gnu99
+            -Wall
+            -Wextra
+    )
+endif()
+# lua shared
+
+if(${LUA_BUILD_LUA})
     add_executable(lua
         ${LUA_EXE_SRC}
     )
@@ -80,9 +102,12 @@ if(NOT ${LUA_BUILD_SHARED_ONLY})
     target_link_libraries(lua
         lua54
     )
+endif()
+# lua
 
+if(${LUA_BUILD_STATIC})
     add_library(lua54_static STATIC
-        ${LUA_LIB_SRC}
+        $<TARGET_OBJECTS:lua_obj>
     )
     target_include_directories(lua54_static
         PRIVATE
@@ -99,7 +124,13 @@ if(NOT ${LUA_BUILD_SHARED_ONLY})
             -Wall
             -Wextra
     )
+endif()
+# lua static
 
+if(${LUA_BUILD_LUAC})
+    if(NOT ${LUA_BUILD_STATIC})
+        message(FATAL_ERROR "Cannot link luac to lua static lib without compiling lua static")
+    endif()
     add_executable(luac
         ${LUAC_EXE_SRC}
     )
@@ -122,3 +153,4 @@ if(NOT ${LUA_BUILD_SHARED_ONLY})
         lua54_static
     )
 endif()
+# luac
